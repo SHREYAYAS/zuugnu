@@ -18,9 +18,31 @@
 }
 
 .logo {
-  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.logoText {
+  font-size: 28px;
   font-weight: 700;
-  color: var(--primary);
+  letter-spacing: 1px;
+  display: flex;
+}
+
+.logoZ { color: #6B8E23; }
+.logoU1 { color: #FFA500; }
+.logoU2 { color: #FFD700; }
+.logoG { color: #9370DB; }
+.logoN { color: #FF1493; }
+.logoU3 { color: #FF6347; }
+
+.logoTagline {
+  font-size: 11px;
+  color: #FFA500;
+  letter-spacing: 1px;
+  margin-left: 2px;
 }
 
 .navLinks {
