@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Zuugnu - Community-Driven Gig Platform",
@@ -22,10 +23,21 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Header />
-        {children}
-        <Footer />
+        <LayoutContent>{children}</LayoutContent>
       </body>
     </html>
+  );
+}
+
+function LayoutContent({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAuthPage = pathname?.startsWith('/auth');
+
+  return (
+    <>
+      {!isAuthPage && <Header />}
+      {children}
+      {!isAuthPage && <Footer />}
+    </>
   );
 }
