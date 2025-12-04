@@ -25,7 +25,7 @@ export default function Header() {
           <li><Link href="#testimonials">Testimonials</Link></li>
           <li><Link href="#contact">Contact</Link></li>
         </ul>
-        <Link href="#signup" className={styles.ctaButton}>Join Now</Link>
+        <Link href="/auth" className={styles.ctaButton}>Join Now</Link>
       </nav>
     </header>
   );
