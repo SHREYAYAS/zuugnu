@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Hero.module.css';
 
 export default function Hero() {
@@ -12,7 +13,13 @@ export default function Hero() {
           <Link href="#training" className={styles.ctaButtonOutline}>Explore Training</Link>
         </div>
         <div className={styles.heroImage}>
-          <div className={styles.placeholder}>Zuugnu Community Illustration</div>
+          <Image 
+            src="/home.2.png" 
+            alt="Zuugnu Community Illustration" 
+            width={900} 
+            height={450}
+            priority
+          />
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Training.module.css';
 
 export default function Training() {
@@ -12,7 +13,12 @@ export default function Training() {
         <div className={styles.trainingContent}>
           <div>
             <div className={styles.trainingImage}>
-              <div className={styles.placeholder}>Zuugnu Training Program</div>
+              <Image 
+                src="/home.png" 
+                alt="Zuugnu Training Program" 
+                width={600} 
+                height={450}
+              />
             </div>
           </div>
           <div>

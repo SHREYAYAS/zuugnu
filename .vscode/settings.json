@@ -1,12 +1,9 @@
 {
 	"files.exclude": {
-		"out/**": true
 	},
 	"search.exclude": {
-		"out/**": true
 	},
 	"files.watcherExclude": {
-		"out/**": true
 	},
 	"typescript.tsserver.excludePaths": [
 		"out",

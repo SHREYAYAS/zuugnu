@@ -1,13 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'export', // <--- Add this line
+  
+  // If you are using the <Image> component, you might also need this:
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',
-      },
-    ],
+    unoptimized: true,
   },
 };
 

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -8,15 +9,14 @@ export default function Header() {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <div className={styles.logo}>
-          <div className={styles.logoText}>
-            <span className={styles.logoZ}>Z</span>
-            <span className={styles.logoU1}>u</span>
-            <span className={styles.logoU2}>u</span>
-            <span className={styles.logoG}>g</span>
-            <span className={styles.logoN}>n</span>
-            <span className={styles.logoU3}>u</span>
-          </div>
-          <div className={styles.logoTagline}>Discover. Decide. Shine</div>
+          <Image 
+            src="/zuugnu-removebg-preview.png" 
+            alt="Zuugnu Logo" 
+            width={250} 
+            height={170}
+            priority
+            style={{ objectFit: 'contain' }}
+          />
         </div>
         <ul className={styles.navLinks}>
           <li><Link href="#features">Features</Link></li>

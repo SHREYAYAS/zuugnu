@@ -172,12 +172,15 @@
   backdrop-filter: blur(20px);
   border-radius: 28px;
   padding: 3rem 2.5rem;
+  padding-bottom: 2.5rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
               0 0 0 1px rgba(255, 255, 255, 0.05) inset;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeInUp 0.8s ease;
   animation-fill-mode: both;
+  position: relative;
+  z-index: 10;
 }
 
 .authCard:nth-child(1) {
@@ -246,21 +249,42 @@
 }
 
 .description {
-  color: #cbd5e1;
-  font-size: 0.95rem;
+  color: #e2e8f0;
+  font-size: 1rem;
   line-height: 1.8;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #a78bfa 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  padding: 0 4px;
+  letter-spacing: 0.5px;
 }
 
 .link {
   color: #60a5fa;
   text-decoration: none;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(96, 165, 250, 0.1);
 }
 
 .link:hover {
-  text-decoration: underline;
+  background: rgba(96, 165, 250, 0.2);
+  color: #93c5fd;
+  transform: translateX(2px);
 }
 
 .form {
@@ -312,7 +336,7 @@
   transition: all 0.3s ease;
 }
 
-.inputWrapper:nth-child(2) .inputIcon {
+.form > .inputWrapper:nth-child(2) .inputIcon {
   color: #eab308;
   filter: drop-shadow(0 0 4px rgba(234, 179, 8, 0.3));
 }
@@ -361,6 +385,209 @@
 
 .eyeBtn:hover {
   color: #cbd5e1;
+}
+
+/* Phone Input Group with Country Code */
+.phoneInputGroup {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.countryCodeDropdown {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+.countryCodeBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.75rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1.5px solid rgba(100, 116, 139, 0.3);
+  border-radius: 14px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.countryCodeBtn:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #60a5fa;
+  color: #93c5fd;
+}
+
+.countryCodeBtn:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
+}
+
+.countryCodeDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1rem;
+}
+
+.countryCodeBtn svg {
+  width: 14px;
+  height: 14px;
+  color: #cbd5e1;
+  transition: transform 0.3s ease;
+}
+
+.countryCodeBtn:hover svg {
+  transform: rotate(180deg);
+}
+
+.countryDropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 280px;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1.5px solid rgba(167, 139, 250, 0.3);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  max-height: 400px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+              0 10px 30px rgba(139, 92, 246, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideDown 0.2s ease;
+}
+
+.countrySearchBox {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+  flex-shrink: 0;
+}
+
+.countrySearchInput {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1.5px solid rgba(100, 116, 139, 0.3);
+  border-radius: 10px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.countrySearchInput:focus {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+  color: #f1f5f9;
+}
+
+.countrySearchInput::placeholder {
+  color: #64748b;
+}
+
+.countryList {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.countryOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 0.85rem;
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  border-left: 3px solid transparent;
+  justify-content: space-between;
+}
+
+.countryOption:hover {
+  background: rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
+  border-left-color: #a78bfa;
+  padding-left: 1.05rem;
+}
+
+.countryOption:active {
+  background: rgba(167, 139, 250, 0.25);
+}
+
+.countryFlag {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  min-width: 24px;
+}
+
+.countryName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.countryPhoneCode {
+  color: #60a5fa;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  min-width: 45px;
+  text-align: right;
+}
+
+/* Scrollbar styling for dropdown */
+.countryDropdownMenu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.countryDropdownMenu::-webkit-scrollbar-track {
+  background: rgba(100, 116, 139, 0.1);
+  border-radius: 10px;
+}
+
+.countryDropdownMenu::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.3);
+  border-radius: 10px;
+}
+
+.countryDropdownMenu::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.5);
+}
+
+.phoneInputGroup .inputWrapper {
+  flex: 1;
 }
 
 .whatsappBtn {
@@ -577,5 +804,208 @@
 
   .footerRight {
     text-align: center;
+  }
+}
+
+/* Register Modal Styles */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+  animation: fadeIn 0.3s ease;
+}
+
+.registerModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(49, 46, 129, 0.98) 100%);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  max-width: 420px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 100;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4),
+              0 0 40px rgba(236, 72, 153, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  z-index: 101;
+}
+
+.closeBtn:hover {
+  background: rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
+  transform: rotate(90deg);
+}
+
+.modalHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.modalIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.modalIcon svg {
+  color: #22c55e;
+  filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.5));
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.modalTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.modalSubtitle {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.inputLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.inputLabel svg {
+  color: #a78bfa;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: rgba(248, 250, 252, 0.95);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  color: #1e293b;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.modalInput:focus {
+  border-color: #a78bfa;
+  background: #f8fafc;
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
+}
+
+.modalInput::placeholder {
+  color: #94a3b8;
+}
+
+.registerModalBtn {
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+  margin-top: 0.5rem;
+}
+
+.registerModalBtn:hover {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(34, 197, 94, 0.4);
+}
+
+.registerModalBtn:active {
+  transform: translateY(0);
+}
+
+/* Mobile Modal Styles */
+@media (max-width: 768px) {
+  .registerModal {
+    padding: 2.5rem 1.75rem;
+    max-width: calc(100% - 2rem);
+    border-radius: 20px;
+  }
+
+  .modalTitle {
+    font-size: 1.5rem;
+  }
+
+  .closeBtn {
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
   }
 }
