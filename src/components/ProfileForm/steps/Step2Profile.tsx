@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from '../steps.module.css';
 
 interface Step2Props {
@@ -12,247 +12,142 @@ interface Step2Props {
 
 export default function Step2Profile({ data, updateData, onNext, onPrev }: Step2Props) {
   const [preview, setPreview] = useState<string>(data.profilePic || '');
-  const [errors, setErrors] = useState<any>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [showCamera, setShowCamera] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [isStarting, setIsStarting] = useState(false);
-  const [cameraReady, setCameraReady] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
   const validateStep = () => {
-    const newErrors: any = {};
-    
+    const newErrors: Record<string, string> = {};
+
     if (!data.profilePic) newErrors.profilePic = 'Profile picture is required';
     if (!data.name) newErrors.name = 'Name is required';
     if (!data.gender) newErrors.gender = 'Gender is required';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
-    if (validateStep()) {
-      onNext();
-    }
+    if (validateStep()) onNext();
   };
 
-  const startCamera = useCallback(async () => {
-    if (isStarting) return;
-    // Avoid restarting if already running and healthy
-    if (streamRef.current && showCamera && cameraReady) {
-      setCameraError(null);
-      return;
-    }
-
-    setIsStarting(true);
-    setCameraReady(false);
-    setCameraError(null);
-
-    // Mount the video element before wiring a new stream so ref is available
-    setShowCamera(true);
-    await new Promise(requestAnimationFrame);
-
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      setCameraError('Camera access is not supported on this device or browser.');
-      setIsStarting(false);
-      return;
-    }
-
-    // If an old stream exists, fully stop it before starting a new one
+  const stopCamera = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => {
+      streamRef.current.getTracks().forEach((track) => {
         track.stop();
         track.enabled = false;
       });
       streamRef.current = null;
     }
 
-    try {
-      // Try with ideal constraints first, fallback to basic if needed
-      let stream: MediaStream | null = null;
-      
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: 'user' },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-          },
-          audio: false
-        });
-      } catch (e) {
-        // Fallback for browsers that don't support ideal constraints (Edge older versions)
-        console.warn('Trying fallback camera constraints...', e);
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user' },
-            audio: false
-          });
-        } catch (e2) {
-          // Last resort - basic video access
-          console.warn('Trying basic camera access...', e2);
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false
-          });
-        }
-      }
-
-      streamRef.current = stream;
-      if (videoRef.current) {
-        const v = videoRef.current;
-        // Use srcObject (modern standard)
-        v.srcObject = stream;
-        v.muted = true;
-        v.playsInline = true;
-        
-        // Ensure playback starts after metadata is loaded
-        const tryPlay = async () => {
-          try {
-            await v.play();
-            setCameraReady(true);
-            console.log('Video playback started successfully');
-          } catch (err) {
-            console.warn('Video playback error (may need user interaction):', err);
-          }
-        };
-        
-        if (v.readyState >= 2) {
-          // Video already has data
-          tryPlay();
-        } else {
-          // Wait for metadata
-          const onLoadedMetadata = () => {
-            tryPlay();
-            v.removeEventListener('loadedmetadata', onLoadedMetadata);
-          };
-          
-          v.addEventListener('loadedmetadata', onLoadedMetadata);
-          
-          // Fallback timeout in case loadedmetadata doesn't fire
-          const timeoutId = setTimeout(() => {
-            tryPlay();
-            v.removeEventListener('loadedmetadata', onLoadedMetadata);
-          }, 1000);
-          
-          v.addEventListener('play', () => clearTimeout(timeoutId));
-        }
-      }
-      setShowCamera(true);
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      
-      let errorMessage = 'Unable to access camera. ';
-      
-      if (error instanceof DOMException) {
-        if (error.name === 'NotAllowedError') {
-          errorMessage += 'Camera permission was denied. Please allow camera access in browser settings.';
-        } else if (error.name === 'NotFoundError') {
-          errorMessage += 'No camera device found. Please check if a camera is connected.';
-        } else if (error.name === 'NotReadableError') {
-          errorMessage += 'Camera is already in use by another application. Please close other camera apps.';
-        } else {
-          errorMessage += error.message;
-        }
-      } else {
-        errorMessage += 'Please check permissions and ensure the camera is not in use.';
-      }
-      
-      setCameraError(errorMessage);
-    } finally {
-      setIsStarting(false);
-    }
-  }, [cameraReady, isStarting, showCamera]);
-
-  const stopCamera = useCallback(() => {
-    // Stop tracks in streamRef
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => {
-        try {
-          track.stop();
-          track.enabled = false;
-        } catch (e) {
-          console.warn('Error stopping track:', e);
-        }
-      });
-      streamRef.current = null;
-    }
-    
-    // Stop video element
     if (videoRef.current) {
-      try {
-        const v = videoRef.current;
-        v.pause();
-        v.muted = true;
-        
-        // Clear srcObject
-        if (v.srcObject) {
-          const stream = v.srcObject as MediaStream;
-          stream.getTracks().forEach(track => {
-            try {
-              track.stop();
-              track.enabled = false;
-            } catch (e) {
-              console.warn('Error stopping video track:', e);
-            }
-          });
-          v.srcObject = null;
-        }
-        
-        // Clear src attribute
-        v.src = '';
-        v.removeAttribute('src');
-      } catch (e) {
-        console.warn('Error stopping camera:', e);
-      }
+      videoRef.current.srcObject = null;
     }
-    
-    setCameraReady(false);
-    setIsStarting(false);
-    setShowCamera(false);
+
+    setIsInitializing(false);
   }, []);
 
   useEffect(() => {
-    // Start camera automatically when component mounts and no preview exists
-    if (!preview && !showCamera) {
-      startCamera();
+    let isMounted = true;
+
+    const initializeCamera = async () => {
+      if (!showCamera || streamRef.current) return;
+
+      setIsInitializing(true);
+      setCameraError(null);
+
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error('Camera not supported on this device');
+        }
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: 'user',
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+
+        if (!isMounted) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+
+        streamRef.current = stream;
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.muted = true;
+          await videoRef.current.play();
+        }
+      } catch (error: any) {
+        console.error('[v0] Camera Error:', error);
+        if (isMounted) {
+          setCameraError(error?.message || 'Unable to access camera');
+        }
+      } finally {
+        if (isMounted) setIsInitializing(false);
+      }
+    };
+
+    if (showCamera) {
+      initializeCamera();
+    } else {
+      stopCamera();
     }
 
     return () => {
+      isMounted = false;
       stopCamera();
     };
-  }, [preview, showCamera, startCamera, stopCamera]);
+  }, [showCamera, stopCamera]);
+
+  useEffect(() => {
+    if (!preview && !showCamera) {
+      setShowCamera(true);
+    }
+  }, [preview, showCamera]);
 
   const capturePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
+    if (videoRef.current && canvasRef.current && !isCapturing) {
+      setIsCapturing(true);
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      const context = canvas.getContext('2d', { willReadFrequently: true });
-      
-      // Use video's natural dimensions if available, fallback to current dimensions
-      const width = video.videoWidth || video.width || 640;
-      const height = video.videoHeight || video.height || 480;
-      
-      if (width > 0 && height > 0) {
-        canvas.width = width;
-        canvas.height = height;
-        
-        if (context) {
-          try {
-            context.drawImage(video, 0, 0, width, height);
-            const imageData = canvas.toDataURL('image/jpeg', 0.8);
-            setPreview(imageData);
-            updateData('profilePic', imageData);
-            stopCamera();
-          } catch (error) {
-            console.error('Error capturing photo:', error);
-            setCameraError('Failed to capture photo. Please try again.');
-          }
-        }
-      } else {
-        setCameraError('Video stream not ready. Please wait a moment and try again.');
+
+      const width = video.videoWidth || 640;
+      const height = video.videoHeight || 480;
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const context = canvas.getContext('2d');
+      if (context) {
+        // Mirror the capture to match the preview
+        context.save();
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.translate(width, 0);
+        context.scale(-1, 1);
+
+        context.drawImage(video, 0, 0, width, height);
+        context.restore();
+
+        const imageData = canvas.toDataURL('image/jpeg', 0.85);
+
+        setPreview(imageData);
+        updateData('profilePic', imageData);
+
+        setTimeout(() => {
+          setShowCamera(false);
+          setIsCapturing(false);
+        }, 300);
       }
     }
   };
@@ -261,122 +156,142 @@ export default function Step2Profile({ data, updateData, onNext, onPrev }: Step2
     setPreview('');
     updateData('profilePic', '');
     setCameraError(null);
-    // Reset and restart camera cleanly without flicker
-    stopCamera();
+    setIsCapturing(false);
     setShowCamera(true);
-    requestAnimationFrame(() => {
-      startCamera();
-    });
   };
 
   return (
     <div className={styles.step}>
       <div className={styles.stepIndicator}>Step 2 of 5</div>
-      
+
       <div className={styles.formGroup}>
         <label>Profile Picture (Live Selfie Only)</label>
-        
-        {cameraError && !preview && (
-          <div className={styles.uploadBox} style={{ borderColor: '#ef4444', background: '#fff5f5' }}>
-            <div style={{ color: '#ef4444', marginBottom: '10px' }}>⚠️ Camera Error</div>
-            <p style={{ color: '#ef4444', marginBottom: '15px' }}>{cameraError}</p>
-            <div style={{ marginBottom: '15px', fontSize: '12px', color: '#666' }}>
-              <p><strong>Troubleshooting:</strong></p>
-              <ul style={{ marginLeft: '20px' }}>
-                <li>✓ Enable camera permission in browser settings</li>
-                <li>✓ Ensure no other app is using the camera</li>
-                <li>✓ Try a different browser (Chrome, Firefox, Edge)</li>
-                <li>✓ Restart your browser completely</li>
-              </ul>
-            </div>
+
+        {cameraError && (
+          <div className={styles.uploadBox} style={{ borderColor: '#ef4444', background: '#fef2f2' }}>
+            <div style={{ color: '#dc2626', marginBottom: '12px', fontWeight: 500 }}>⚠️ Camera Error</div>
+            <p style={{ color: '#dc2626', fontSize: '14px', marginBottom: '12px' }}>{cameraError}</p>
             <button
               type="button"
               className={styles.btnRetake}
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={() => {
                 setCameraError(null);
-                startCamera();
+                setShowCamera(false);
+                setTimeout(() => setShowCamera(true), 100);
               }}
             >
               🔄 Try Again
             </button>
           </div>
         )}
-        
+
         {showCamera && !cameraError ? (
           <div className={styles.cameraContainer}>
-            {(!cameraReady || isStarting) && (
-              <div style={{ padding: '12px', textAlign: 'center', background: '#f8f9fa', color: '#666', fontSize: '14px' }}>
-                Starting camera...
+            {isInitializing && (
+              <div
+                style={{
+                  padding: '20px',
+                  textAlign: 'center',
+                  background: 'rgba(0,0,0,0.7)',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backdropFilter: 'blur(2px)',
+                }}
+              >
+                <div style={{ color: 'white' }}>
+                  <div style={{ fontSize: '18px', marginBottom: '8px' }}>🎥</div>
+                  <div>Starting camera...</div>
+                </div>
               </div>
             )}
-            <video 
-              ref={videoRef} 
-              autoPlay 
+
+            {isCapturing && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 20,
+                  animation: 'pulse 0.3s ease-in-out',
+                  background: 'rgba(255,255,255,0.1)',
+                }}
+              />
+            )}
+
+            <video
+              ref={videoRef}
+              autoPlay
               playsInline
               muted
-              disablePictureInPicture
-              controls={false}
               className={styles.videoPreview}
               style={{
-                transform: 'scaleX(-1)', // Mirror effect for selfie
-                WebkitTransform: 'scaleX(-1)', // For webkit browsers
-                msTransform: 'scaleX(-1)', // For IE/Edge
-                opacity: cameraReady ? 1 : 0.25,
-                filter: cameraReady ? 'none' : 'grayscale(1)',
-              } as any}
-              onPlay={() => console.log('Video playing')}
-              onError={(e) => {
-                console.error('Video element error:', e);
+                transform: 'scaleX(-1)',
+                width: '100%',
+                borderRadius: '12px',
+                display: 'block',
+                aspectRatio: '4/3',
+                objectFit: 'cover',
+                background: '#000',
               }}
             />
             <canvas ref={canvasRef} style={{ display: 'none' }} />
+
             <div className={styles.cameraButtons}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={styles.btnCapture}
                 onClick={capturePhoto}
+                disabled={isCapturing || isInitializing}
+                style={{
+                  opacity: isCapturing || isInitializing ? 0.6 : 1,
+                  cursor: isCapturing || isInitializing ? 'not-allowed' : 'pointer',
+                }}
               >
-                📸 Capture Photo
-              </button>
-              <button 
-                type="button" 
-                className={styles.btnCancel}
-                onClick={stopCamera}
-              >
-                Cancel
+                {isCapturing ? '⏳ Capturing...' : '📸 Capture'}
               </button>
             </div>
           </div>
         ) : preview && !cameraError ? (
           <div className={styles.uploadBox}>
-            <img src={preview} alt="Profile Preview" className={styles.previewImage} />
-            <button 
-              type="button" 
-              className={styles.btnRetake}
-              onClick={handleRetake}
+            <div
+              style={{
+                borderRadius: '12px',
+                overflow: 'hidden',
+                marginBottom: '16px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+              }}
             >
+              <img
+                src={preview || '/placeholder.svg'}
+                alt="Profile Preview"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block',
+                }}
+              />
+            </div>
+            <button type="button" className={styles.btnRetake} onClick={handleRetake}>
               📷 Retake Photo
             </button>
           </div>
-        ) : !cameraError ? (
+        ) : !showCamera && !cameraError ? (
           <div className={styles.uploadBox}>
-            <div className={styles.uploadIcon}>📷</div>
-            <p>Live selfie required</p>
-            <small style={{color: '#666'}}>Face must be clearly visible</small>
-            <button
-              type="button"
-              className={styles.btnRetake}
-              onClick={(e) => {
-                e.preventDefault();
-                startCamera();
-              }}
-            >
-              Open Camera
+            <button type="button" className={styles.btnRetake} onClick={() => setShowCamera(true)}>
+              📷 Open Camera
             </button>
           </div>
         ) : null}
-        
+
         {errors.profilePic && <span className={styles.errorText}>{errors.profilePic}</span>}
       </div>
 
@@ -412,21 +327,21 @@ export default function Step2Profile({ data, updateData, onNext, onPrev }: Step2
       </div>
 
       <div className={styles.buttonGroup}>
-        <button 
-          type="button" 
-          className={styles.btnSecondary}
-          onClick={onPrev}
-        >
+        <button type="button" className={styles.btnSecondary} onClick={onPrev}>
           Previous
         </button>
-        <button 
-          type="button" 
-          className={styles.btnPrimary}
-          onClick={handleNext}
-        >
+        <button type="button" className={styles.btnPrimary} onClick={handleNext}>
           Next
         </button>
       </div>
+
+      <style>{`
+        @keyframes pulse {
+          0% { opacity: 1; }
+          50% { opacity: 0.7; }
+          100% { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
