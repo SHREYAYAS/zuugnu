@@ -7,12 +7,14 @@ import Footer from './Footer';
 export default function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAuthPage = pathname?.startsWith('/auth');
+  const isDashboardPage = pathname?.startsWith('/dashboard');
+  const isProfilePage = pathname === '/profile';
 
   return (
     <>
-      {!isAuthPage && <Header />}
+      {!isAuthPage && !isDashboardPage && !isProfilePage && <Header />}
       {children}
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && !isDashboardPage && !isProfilePage && <Footer />}
     </>
   );
 }

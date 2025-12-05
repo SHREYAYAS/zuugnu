@@ -1,0 +1,204 @@
+/* Records section styles */
+.recordsSection {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.recordsSection:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.recordsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+}
+
+.recordsCount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.recordsCount i {
+  color: #667eea;
+  font-size: 20px;
+}
+
+.shortlistControls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.shortlistControls select {
+  padding: 10px 14px;
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  font-size: 13px;
+  transition: all 0.3s;
+  background: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.shortlistControls select:hover {
+  border-color: #a5b4fc;
+}
+
+.shortlistControls select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #e0e7ff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: all 0.3s;
+}
+
+.searchBox:hover {
+  border-color: #a5b4fc;
+}
+
+.searchBox:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+}
+
+.searchBox i {
+  color: #667eea;
+}
+
+.searchBox input {
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0 10px;
+  font-size: 14px;
+  width: 200px;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.dataTable thead {
+  background: linear-gradient(135deg, #667eea15, #764ba215);
+}
+
+.dataTable th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 13px;
+  color: #555;
+  border-bottom: 3px solid rgba(102, 126, 234, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dataTable td {
+  padding: 18px 12px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  font-size: 14px;
+}
+
+.dataTable tbody tr {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dataTable tbody tr:hover {
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), transparent);
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.tableBtn {
+  padding: 8px 16px;
+  border: 2px solid #e0e7ff;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+}
+
+.tableBtn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.statusBadge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusActive {
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  color: #155724;
+  box-shadow: 0 2px 8px rgba(21, 87, 36, 0.2);
+}
+
+.statusPending {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  color: #856404;
+  box-shadow: 0 2px 8px rgba(133, 100, 4, 0.2);
+}
+
+.statusLate {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+  color: #721c24;
+  box-shadow: 0 2px 8px rgba(114, 28, 36, 0.2);
+}
+
+.threeDots {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 8px 12px;
+  transition: all 0.3s;
+  border-radius: 8px;
+}
+
+.threeDots:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  transform: scale(1.2);
+}
