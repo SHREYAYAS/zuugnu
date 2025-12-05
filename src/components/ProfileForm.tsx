@@ -64,18 +64,18 @@ export default function ProfileForm() {
   const progress = (currentStep / TOTAL_STEPS) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-purple-800 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-purple-800 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-4">My Profile</h1>
-          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-            <p>⚠️ Please update your real time pic (face must be clearly visible) and other info.</p>
-            <p>The account may be disabled if any discrepancy is found at any stage.</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">My Profile</h1>
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 sm:p-4 rounded">
+            <p className="text-sm sm:text-base">⚠️ Please update your real time pic (face must be clearly visible) and other info.</p>
+            <p className="text-sm sm:text-base">The account may be disabled if any discrepancy is found at any stage.</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="bg-gray-200 rounded-full h-2 mb-8">
+        <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8">
+          <div className="bg-gray-200 rounded-full h-2 mb-6 sm:mb-8">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}

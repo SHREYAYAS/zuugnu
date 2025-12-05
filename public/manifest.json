@@ -1,0 +1,72 @@
+{
+  "name": "Zuugnu - Community-Driven Gig Platform",
+  "short_name": "Zuugnu",
+  "description": "Join India's fastest-growing community-driven platform for pre-paid gigs, bidding opportunities, and skill-building.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6C63FF",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.icon.1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.icon.1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.icon.1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/favicon.icon.1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/favicon.icon.1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "View Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open your Zuugnu dashboard",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/favicon.icon.1.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "View Profile",
+      "short_name": "Profile",
+      "description": "Open your profile",
+      "url": "/profile",
+      "icons": [
+        {
+          "src": "/favicon.icon.1.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
